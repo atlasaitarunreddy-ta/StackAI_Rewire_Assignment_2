@@ -1,0 +1,71 @@
+[
+  {
+    "driver": "acquisition_channel",
+    "test_name": "Chi-square test of independence",
+    "statistic": 5.8387,
+    "p_value": 0.11972502404435889,
+    "effect_size_name": "Cram\u00e9r's V",
+    "effect_size": 0.0624,
+    "direction": "Highest churn: organic (15.27%); lowest churn: paid_search (10.21%)",
+    "leakage_tainted": false,
+    "leakage_note": "Static attribute \u2014 no temporal overlap with label."
+  },
+  {
+    "driver": "region",
+    "test_name": "Chi-square test of independence",
+    "statistic": 3.7571,
+    "p_value": 0.28891502428265387,
+    "effect_size_name": "Cram\u00e9r's V",
+    "effect_size": 0.05,
+    "direction": "Highest churn: east (16.36%); lowest churn: north (12.34%)",
+    "leakage_tainted": false,
+    "leakage_note": "Static attribute \u2014 no temporal overlap with label."
+  },
+  {
+    "driver": "total_amount (customer-level)",
+    "test_name": "Mann-Whitney U test",
+    "statistic": 61626.5,
+    "p_value": 7.166299258132719e-34,
+    "effect_size_name": "rank-biserial correlation",
+    "effect_size": 0.5299,
+    "direction": "Median total amount \u2014 churned: $71.12, non-churned: $364.38 (higher: non-churned)",
+    "leakage_tainted": false,
+    "leakage_note": "All-time aggregate \u2014 not windowed relative to label."
+  },
+  {
+    "driver": "return_rate (customer-level)",
+    "test_name": "Mann-Whitney U test",
+    "statistic": 110279.0,
+    "p_value": 9.275827260489429e-06,
+    "effect_size_name": "rank-biserial correlation",
+    "effect_size": 0.1588,
+    "direction": "Median return rate \u2014 churned: 0.0000, non-churned: 0.0000 (higher: non-churned)",
+    "leakage_tainted": false,
+    "leakage_note": "All-time proportion \u2014 not windowed relative to label."
+  },
+  {
+    "driver": "days_since_last_transaction",
+    "test_name": "Descriptive + Mann-Whitney U (diagnostic only)",
+    "statistic": 157058.0,
+    "p_value": 3.707889126282132e-74,
+    "effect_size_name": "descriptive separation range",
+    "effect_size": 90.0,
+    "direction": "Non-churned: 0\u201390 days; churned (active): 91\u2013365 days. Complete separation by construction \u2014 the label is defined on this same window.",
+    "leakage_tainted": true,
+    "leakage_note": "Circular with label definition \u2014 churn = no purchase in trailing 90 days, and this variable measures exactly that. Near-perfect separation is definitional, not predictive.",
+    "non_churned": {
+      "count": 1298,
+      "min_days": 0,
+      "max_days": 90,
+      "mean_days": 28.6,
+      "median_days": 23.0
+    },
+    "churned_active": {
+      "count": 121,
+      "min_days": 91,
+      "max_days": 365,
+      "mean_days": 132.5,
+      "median_days": 113.0
+    }
+  }
+]

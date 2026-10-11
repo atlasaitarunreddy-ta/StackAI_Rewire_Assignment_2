@@ -1,0 +1,29 @@
+{
+  "zero_activity": {
+    "count": 81,
+    "churned": 81,
+    "not_churned": 0
+  },
+  "amount_distribution": {
+    "count": 11742,
+    "mean": 49.72,
+    "median": 33.82,
+    "std": 55.24,
+    "min": 3.0,
+    "q1": 18.36,
+    "q3": 61.39,
+    "max": 1684.21,
+    "skewness": 6.1066,
+    "outlier_rule": "1.5\u00d7IQR",
+    "outlier_lower_bound": -46.18,
+    "outlier_upper_bound": 125.93,
+    "outlier_count": 783,
+    "outlier_pct": 6.7,
+    "outlier_direction": "all high"
+  },
+  "row_counts": {
+    "customers": 1500,
+    "transactions": 11742,
+    "monthly_agg": 8086
+  }
+}

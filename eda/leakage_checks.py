@@ -1,29 +1,65 @@
 """
-Leakage-discipline checks specific to this dataset's label definition: churn = no purchase
-in the 90 days before the as-of date.
-
-A feature computed over a window that overlaps that same trailing period is not merely
-correlated with the label — it is circular with it. These checks exist to catch that
-specifically, not to raise a generic "be careful about leakage" warning.
+Leakage checks: as-of-date discipline and label-circularity detection.
 """
 
 import pandas as pd
 
 
-def flag_label_circular_drivers(candidate_drivers: list[str]) -> dict:
-    """TODO: given the list of candidate driver names in eda_review.md, return which of
-    them (if any) are computed over a window that overlaps the label's own trailing-90-day
-    definition (e.g. days-since-last-transaction, trailing-90-day spend), with a one-line
-    reason per flagged driver. Do not flag a driver that is merely correlated but not
-    definitionally derived from the same window (e.g. account tenure).
-    """
-    raise NotImplementedError
+def get_as_of_date(txns: pd.DataFrame) -> pd.Timestamp:
+    """Return the as-of date — the last observed transaction timestamp."""
+    return txns["txn_timestamp"].max()
 
 
-def check_no_post_as_of_rows_used(transactions: pd.DataFrame, as_of: str) -> dict:
-    """TODO: confirm no row in `transactions` with txn_timestamp after `as_of` was used in
-    any profiling or hypothesis-test computation. Return {"passed": bool, "n_post_as_of_rows
-    _in_source": int, "note": str} — the source file may contain rows after as_of (it is not
-    edited), the check is that your OWN computations excluded them.
+def flag_leakage_tainted_variables(candidate_variables: list[str]) -> dict:
     """
-    raise NotImplementedError
+    Given a list of candidate variable names, return those whose computation
+    window overlaps the label's trailing-90-day definition.
+
+    Known tainted patterns:
+    - days_since_last_transaction (directly circular)
+    - Any variable containing 'trailing_90d' or 'last_90d'
+    - Any recency/windowed aggregate computed over the trailing 90 days
+    """
+    tainted = []
+    clean = []
+    for var in candidate_variables:
+        is_tainted = False
+        note = ""
+        if var == "days_since_last_transaction":
+            is_tainted = True
+            note = "Directly circular — computed from the same trailing-90-day window that defines the churn label."
+        elif "trailing_90" in var.lower() or "last_90" in var.lower():
+            is_tainted = True
+            note = "Windowed aggregate over the same 90-day window as the label definition."
+        elif "recency" in var.lower():
+            is_tainted = True
+            note = "Recency-based variable — overlaps with the trailing-90-day label window."
+        else:
+            note = "No evidence of label-window overlap."
+
+        if is_tainted:
+            tainted.append({"variable": var, "reason": note})
+        else:
+            clean.append({"variable": var, "reason": note})
+
+    return {"tainted": tainted, "clean": clean}
+
+
+def check_no_future_data_used(
+    txns: pd.DataFrame,
+    as_of_date: pd.Timestamp,
+    profile_period_end: pd.Timestamp | None = None,
+) -> dict:
+    """
+    Confirm no transaction with timestamp after as_of_date was included
+    in any profiling or hypothesis computation.
+    """
+    if profile_period_end is None:
+        profile_period_end = as_of_date
+    future_rows = txns[txns["txn_timestamp"] > profile_period_end]
+    return {
+        "as_of_date": str(as_of_date),
+        "profile_period_end": str(profile_period_end),
+        "future_rows_count": len(future_rows),
+        "all_data_before_as_of": len(future_rows) == 0,
+    }

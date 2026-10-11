@@ -1,45 +1,104 @@
 """
-Schema, missingness, distribution-shape, and outlier profiling for the three raw sources.
-
-Every function here should return something concrete an evaluator (or
-`scripts/verify_findings.py`) can check against the real data — not a prose-only summary.
+Schema, missingness, distribution shapes, and outlier detection.
 """
 
 import pandas as pd
+import numpy as np
 
 
-def profile_schema(df: pd.DataFrame) -> dict:
-    """TODO: return {"columns": [...], "dtypes": {...}, "n_rows": int} for the given frame."""
-    raise NotImplementedError
+def schema_summary(df: pd.DataFrame, name: str) -> dict:
+    """Return column-level dtype and null-count summary."""
+    rows = []
+    for col in df.columns:
+        rows.append({
+            "source": name,
+            "column": col,
+            "dtype": str(df[col].dtype),
+            "null_count": int(df[col].isna().sum()),
+            "null_pct": round(float(df[col].isna().mean() * 100), 2),
+        })
+    return pd.DataFrame(rows)
 
 
-def profile_missingness(df: pd.DataFrame) -> dict:
-    """TODO: return per-column null counts.
-
-    Do not conflate a customer legitimately absent from transactions.db (zero activity) with
-    an actually-missing value in a column that IS present — see `count_zero_activity_customers`
-    below for the former.
+def numeric_profile(series: pd.Series, iqr_multiple: float = 1.5) -> dict:
     """
-    raise NotImplementedError
+    Return distribution shape + outlier count for a numeric series.
 
-
-def count_zero_activity_customers(customers: pd.DataFrame, transactions: pd.DataFrame) -> int:
-    """TODO: count customers with zero matching rows in `transactions`. Compute this
-    directly — do not hardcode a number from any prior document."""
-    raise NotImplementedError
-
-
-def profile_distribution(series: pd.Series) -> dict:
-    """TODO: return at minimum {"mean": ..., "median": ..., "skew_direction": "left"/"right"/
-    "roughly symmetric", "min": ..., "max": ...} for a numeric column. Use the gap between
-    mean and median (or a skewness statistic) to decide the skew direction — do not eyeball it.
+    Outlier rule: values below Q1 - m * IQR or above Q3 + m * IQR are flagged.
     """
-    raise NotImplementedError
+    q1 = float(series.quantile(0.25))
+    q3 = float(series.quantile(0.75))
+    iqr = q3 - q1
+    lower = q1 - iqr_multiple * iqr
+    upper = q3 + iqr_multiple * iqr
+    outliers = series[(series < lower) | (series > upper)]
+    return {
+        "count": len(series),
+        "mean": round(float(series.mean()), 2),
+        "median": round(float(series.median()), 2),
+        "std": round(float(series.std()), 2),
+        "min": round(float(series.min()), 2),
+        "q1": round(q1, 2),
+        "q3": round(q3, 2),
+        "max": round(float(series.max()), 2),
+        "skewness": round(float(series.skew()), 4),
+        "outlier_rule": f"{iqr_multiple}×IQR",
+        "outlier_lower_bound": round(lower, 2),
+        "outlier_upper_bound": round(upper, 2),
+        "outlier_count": len(outliers),
+        "outlier_pct": round(len(outliers) / len(series) * 100, 1),
+        "outlier_direction": (
+            "all high"
+            if (outliers > upper).sum() == len(outliers) > 0
+            else "all low"
+            if (outliers < lower).sum() == len(outliers) > 0
+            else "both sides"
+        ),
+    }
 
 
-def count_outliers(series: pd.Series, rule: str = "iqr", multiplier: float = 1.5) -> dict:
-    """TODO: return {"rule": rule, "bound_low": ..., "bound_high": ..., "n_outliers": ...}
-    using an explicit, stated rule (e.g. values outside [Q1 - multiplier*IQR, Q3 +
-    multiplier*IQR]) — never just "eyeballed as an outlier."
+def categorical_profile(series: pd.Series) -> pd.DataFrame:
+    """Frequency table for a categorical column."""
+    counts = series.value_counts(dropna=False).reset_index()
+    counts.columns = ["value", "count"]
+    counts["pct"] = round(counts["count"] / len(series) * 100, 2)
+    return counts
+
+
+def churn_rate_by_group(
+    customers: pd.DataFrame,
+    group_col: str,
+) -> pd.DataFrame:
+    """Churn rate broken down by a categorical column in customers.csv."""
+    grouped = customers.groupby(group_col).agg(
+        total=("customer_id", "count"),
+        churned=("churned", "sum"),
+    ).reset_index()
+    grouped["churn_rate"] = round(grouped["churned"] / grouped["total"] * 100, 2)
+    return grouped
+
+
+def zero_activity_count(
+    customers: pd.DataFrame,
+    txns: pd.DataFrame,
+) -> int:
+    """Count customers present in customers.csv but absent from transactions.db."""
+    active = set(txns["customer_id"].unique())
+    all_cust = set(customers["customer_id"])
+    return len(all_cust - active)
+
+
+def zero_activity_churn_status(
+    customers: pd.DataFrame,
+    txns: pd.DataFrame,
+) -> dict:
     """
-    raise NotImplementedError
+    Return churned counts for the zero-activity population.
+    """
+    active = set(txns["customer_id"].unique())
+    za = customers[~customers["customer_id"].isin(active)]
+    return {
+        "count": len(za),
+        "churned": int(za["churned"].sum()),
+        "not_churned": int((za["churned"] == 0).sum()),
+    }
