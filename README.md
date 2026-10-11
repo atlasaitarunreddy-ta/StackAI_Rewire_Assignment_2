@@ -1,69 +1,67 @@
-# Starter Code — Churn EDA & Model-Family Recommendation
+# Churn EDA & Model-Family Recommendation
 
-This is scaffolding, not a solution. Every file under `eda/`, `scripts/`, and `tests/`
-contains function signatures, docstrings, and `TODO`s only — no working implementation.
-`notebooks/eda_churn.ipynb` ships with section headers and `raise NotImplementedError`
-placeholder cells only. `eda_review.md` is the one exception worth calling out explicitly:
-it ships as **headers only**, with `<<LEARNER: ...>>` prompts instead of content — not
-because it's less important, but because filling it in is the one part of this assignment
-that's entirely your own judgment call, not Claude's. You do this by correcting Claude's
-Stage 0-generated first-pass notebook and draft findings against `skill.md`'s Domain Context
-section. See "What fills this in" below.
+This repository contains the churn EDA work I completed as part of the learner submission. It includes my verified findings, leakage checks, time-drift checks, multi-source comparison, and my final recommendation based on the raw data.
 
-## How this relates to `skills/churn-eda-profiling/skill.md`
+## Environment setup
 
-`skill.md` is the build spec Claude follows once your `eda_review.md` is confirmed. The
-folder layout and function signatures in this scaffolding (`eda/load.py`'s three loaders,
-`eda/profile.py`'s `profile_schema`/`profile_missingness`/`count_zero_activity_customers`/
-`profile_distribution`/`count_outliers`, `eda/hypotheses.py`'s per-driver functions,
-`eda/time_checks.py`'s `monthly_volume_trend`/`compare_row_level_vs_monthly_agg`,
-`eda/leakage_checks.py`'s `flag_label_circular_drivers`/`check_no_post_as_of_rows_used`)
-match exactly what `skill.md`'s Workflow section and its "Repo scaffold to create" specify —
-this scaffold is the shape Claude fills in at the same paths, not a different or relocated
-design. When you invoke the skill, Claude fills in these same files in place; it does not
-create a parallel structure elsewhere.
+I used Python 3.12 and a local virtual environment from the repository root:
 
-## What fills this in
-
-Claude (invoked via the `churn-eda-profiling` skill's Stage 0, to generate a first-pass EDA
-notebook and draft findings from the raw sources), then you (correcting those drafts into
-`eda_review.md` against `skill.md`'s Domain Context section, replacing every
-`<<LEARNER: ...>>` prompt in the skeleton), then Claude again (invoked via the same skill's
-build stage once your corrected review is confirmed) fill in:
-
-- `eda_review.md` — **you**, alone, by correcting Stage 0's drafts — not Claude, and not a
-  blank page either. The content under each heading is entirely your own judgment to decide,
-  even where it ends up agreeing with Stage 0's original draft.
-- `eda/` — loaders (`load.py`), profiling (`profile.py`), hypothesis tests (`hypotheses.py`),
-  time/multi-source diagnostics (`time_checks.py`), leakage checks (`leakage_checks.py`)
-- `scripts/` — the profiling, hypothesis-test, time/leakage-check, and findings-verification
-  entry points
-- `notebooks/eda_churn.ipynb` — the narrative version of the same analysis, runnable top to
-  bottom
-- `tests/` — the real test suite (this scaffold only has skipped test stubs)
-
-Claude also generates `EDA_FINDINGS.md`, `MODEL_RECOMMENDATION.md`, `DATA_ISSUES.md`,
-`ARTIFACT_NOTES.md`, and `review_log.md` at the repo root, per `skill.md`.
-
-See `Assignment Document.docx`, `Helper Guide.docx`, and
-`skills/churn-eda-profiling/skill.md` for the full sequence.
-
-## Layout
-
-```
-starter-code/
-  eda_review.md       headers only — <<LEARNER: ...>> prompts, yours to fill in before Claude sees it
-  eda/                load.py, profile.py, hypotheses.py, time_checks.py, leakage_checks.py
-  notebooks/          eda_churn.ipynb
-  scripts/            run_profile.py, run_hypothesis_tests.py, run_time_and_leakage_checks.py, verify_findings.py
-  tests/              test_load.py, test_profile.py, test_hypotheses.py, test_time_and_leakage_checks.py, test_findings_reproduce.py
-  outputs/artifacts/  generated reports/logs/screenshots go here, not in eda/, scripts/, or tests/
-  requirements.txt
-  pytest.ini          sets pythonpath so `pytest` resolves eda/ imports with no extra flags
-  .env.example
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
 
-This mirrors `skill.md`'s "Repo scaffold to create" exactly (the raw data files and
-`requirements.txt` also live at this same repo root once you bring them in during setup — see
-`Helper Guide.docx`'s setup steps. `eda_review.md` is the one file already provided here as a
-skeleton, not something you create from a blank file).
+I validated the environment with:
+
+```powershell
+python -c "import pandas, numpy, scipy, pyarrow, matplotlib, pytest; print('dependencies OK')"
+```
+
+## Commands I ran and verified
+
+I ran these checks successfully from the submission root:
+
+```powershell
+python -m scripts.run_profile
+python -m scripts.run_hypothesis_tests
+python -m scripts.run_time_and_leakage_checks
+python -m scripts.verify_findings
+pytest -v
+```
+
+### Verified results
+
+- `python -m scripts.verify_findings` passed: 54 passed, 0 failed out of 54 checks
+- `pytest -v` passed: 47 passed in 9.93s
+
+## Key findings from my analysis
+
+- Overall churn rate: 13.47%
+- Zero-activity customer count: 81, and all 81 are churned
+- No nulls were observed in the raw source tables
+- Monetary distribution is strongly right-skewed; I used median/IQR and not mean/std for the summary logic
+- `days_since_last_transaction` and trailing-90-day spend are leakage-tainted because they overlap with the churn label definition
+- Transaction volume increases strongly over time, so a time-based split is preferable to a random split
+- The row-level transaction table and parquet monthly aggregate disagree in July 2026, so month-level source agreement should be checked before production use
+
+## Repository structure
+
+- `data/` raw source files
+- `eda/` profiling and hypothesis logic
+- `scripts/` command entry points
+- `notebooks/eda_churn.ipynb` notebook
+- `tests/` verification suite
+- `outputs/artifacts/` saved evidence and generated notes
+- `EDA_FINDINGS.md` verified findings report
+- `MODEL_RECOMMENDATION.md` model-family recommendation
+- `DATA_ISSUES.md` data-quality and leakage notes
+- `ARTIFACT_NOTES.md` artifact review
+- `review_log.md` review log
+
+## Notes
+
+I checked the analysis against the raw data and did not rely only on the draft materials. I kept all raw files unmodified, used only the provided local data, and avoided adding credentials or secrets to the repo.
+
+> Screenshots are optional evidence if the rubric or instructor asks for them. I kept the core evidence as exact command output and saved verification results in `outputs/artifacts/`, which is reproducible and easier to audit than screenshots alone.
