@@ -1,0 +1,54 @@
+$ C:\Users\atlasai.tarunred\Downloads\Bundle\churn-eda-submission\.venv\Scripts\python.exe -m scripts.run_profile
+============================================================
+SCHEMA SUMMARY
+============================================================
+
+--- customers (1500 rows) ---
+  customer_id                    int64         nulls=0 (0.0%)
+  signup_date                    datetime64[us]  nulls=0 (0.0%)
+  acquisition_channel            str           nulls=0 (0.0%)
+  region                         str           nulls=0 (0.0%)
+  churned                        int64         nulls=0 (0.0%)
+
+--- transactions (11742 rows) ---
+  customer_id                    int64         nulls=0 (0.0%)
+  txn_timestamp                  datetime64[ns]  nulls=0 (0.0%)
+  category                       str           nulls=0 (0.0%)
+  channel                        str           nulls=0 (0.0%)
+  amount                         float64       nulls=0 (0.0%)
+  is_returned                    int64         nulls=0 (0.0%)
+
+--- monthly_agg (8086 rows) ---
+  customer_id                    int64         nulls=0 (0.0%)
+  txn_month                      datetime64[us]  nulls=0 (0.0%)
+  txn_count                      int64         nulls=0 (0.0%)
+  total_amount                   float64       nulls=0 (0.0%)
+  return_count                   int64         nulls=0 (0.0%)
+
+============================================================
+ZERO-ACTIVITY CUSTOMER POPULATION
+============================================================
+  Count: 81
+  Churned: 81/81
+  Not churned: 0/81
+
+============================================================
+NUMERIC DISTRIBUTION � TRANSACTION AMOUNT
+============================================================
+  count                     = 11742
+  mean                      = 49.72
+  median                    = 33.82
+  std                       = 55.24
+  min                       = 3.0
+  q1                        = 18.36
+  q3                        = 61.39
+  max                       = 1684.21
+  skewness                  = 6.1066
+  outlier_rule              = 1.5�IQR
+  outlier_lower_bound       = -46.18
+  outlier_upper_bound       = 125.93
+  outlier_count             = 783
+  outlier_pct               = 6.7
+  outlier_direction         = all high
+
+Profile saved to outputs/profile_summary.json

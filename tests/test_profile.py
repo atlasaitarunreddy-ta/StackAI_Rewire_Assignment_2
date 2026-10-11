@@ -4,6 +4,7 @@ Tests for profile.py — profiling functions on synthetic and real data.
 
 import pandas as pd
 import numpy as np
+import pytest
 from eda.profile import numeric_profile, categorical_profile, zero_activity_count
 
 
@@ -31,6 +32,10 @@ class TestNumericProfile:
         prof = numeric_profile(data)
         assert prof["outlier_count"] >= 2, f"Should detect injected outliers, got {prof['outlier_count']}"
         assert prof["outlier_direction"] == "all high"
+
+    def test_empty_series_reports_no_usable_data(self):
+        with pytest.raises(ValueError, match="empty or all-missing"):
+            numeric_profile(pd.Series([], dtype=float))
 
     def test_no_outliers_constant(self):
         """A constant series should have zero outliers."""

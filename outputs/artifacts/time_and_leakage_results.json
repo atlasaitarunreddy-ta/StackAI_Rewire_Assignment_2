@@ -1,0 +1,253 @@
+{
+  "trend": {
+    "months_covered": 30,
+    "first_month": "2024-02",
+    "last_month": "2026-07",
+    "first_txn_count": 1,
+    "last_txn_count": 1231,
+    "growth_factor_txns": 1231.0,
+    "first_total_amount": 25.03,
+    "last_total_amount": 62084.62,
+    "first_unique_customers": 1,
+    "last_unique_customers": 787,
+    "trend_direction": "increasing"
+  },
+  "monthly_detail": [
+    {
+      "month": "2024-02",
+      "txn_count": 1,
+      "total_amount": 25.03,
+      "unique_customers": 1
+    },
+    {
+      "month": "2024-03",
+      "txn_count": 3,
+      "total_amount": 78.11,
+      "unique_customers": 3
+    },
+    {
+      "month": "2024-04",
+      "txn_count": 5,
+      "total_amount": 239.77,
+      "unique_customers": 5
+    },
+    {
+      "month": "2024-05",
+      "txn_count": 17,
+      "total_amount": 576.3100000000001,
+      "unique_customers": 13
+    },
+    {
+      "month": "2024-06",
+      "txn_count": 19,
+      "total_amount": 772.03,
+      "unique_customers": 16
+    },
+    {
+      "month": "2024-07",
+      "txn_count": 31,
+      "total_amount": 1510.7,
+      "unique_customers": 24
+    },
+    {
+      "month": "2024-08",
+      "txn_count": 42,
+      "total_amount": 2128.91,
+      "unique_customers": 33
+    },
+    {
+      "month": "2024-09",
+      "txn_count": 69,
+      "total_amount": 3858.0699999999997,
+      "unique_customers": 53
+    },
+    {
+      "month": "2024-10",
+      "txn_count": 85,
+      "total_amount": 4105.74,
+      "unique_customers": 58
+    },
+    {
+      "month": "2024-11",
+      "txn_count": 84,
+      "total_amount": 4106.8,
+      "unique_customers": 68
+    },
+    {
+      "month": "2024-12",
+      "txn_count": 124,
+      "total_amount": 5844.06,
+      "unique_customers": 89
+    },
+    {
+      "month": "2025-01",
+      "txn_count": 151,
+      "total_amount": 6752.24,
+      "unique_customers": 111
+    },
+    {
+      "month": "2025-02",
+      "txn_count": 182,
+      "total_amount": 9266.78,
+      "unique_customers": 128
+    },
+    {
+      "month": "2025-03",
+      "txn_count": 234,
+      "total_amount": 11576.51,
+      "unique_customers": 151
+    },
+    {
+      "month": "2025-04",
+      "txn_count": 242,
+      "total_amount": 12056.95,
+      "unique_customers": 179
+    },
+    {
+      "month": "2025-05",
+      "txn_count": 308,
+      "total_amount": 14102.05,
+      "unique_customers": 232
+    },
+    {
+      "month": "2025-06",
+      "txn_count": 326,
+      "total_amount": 17978.85,
+      "unique_customers": 252
+    },
+    {
+      "month": "2025-07",
+      "txn_count": 367,
+      "total_amount": 19357.72,
+      "unique_customers": 269
+    },
+    {
+      "month": "2025-08",
+      "txn_count": 458,
+      "total_amount": 23394.9,
+      "unique_customers": 328
+    },
+    {
+      "month": "2025-09",
+      "txn_count": 487,
+      "total_amount": 23634.96,
+      "unique_customers": 336
+    },
+    {
+      "month": "2025-10",
+      "txn_count": 569,
+      "total_amount": 26535.920000000002,
+      "unique_customers": 401
+    },
+    {
+      "month": "2025-11",
+      "txn_count": 560,
+      "total_amount": 30883.01,
+      "unique_customers": 418
+    },
+    {
+      "month": "2025-12",
+      "txn_count": 683,
+      "total_amount": 33475.04,
+      "unique_customers": 459
+    },
+    {
+      "month": "2026-01",
+      "txn_count": 724,
+      "total_amount": 34380.14,
+      "unique_customers": 522
+    },
+    {
+      "month": "2026-02",
+      "txn_count": 681,
+      "total_amount": 32833.81,
+      "unique_customers": 481
+    },
+    {
+      "month": "2026-03",
+      "txn_count": 869,
+      "total_amount": 42458.53,
+      "unique_customers": 602
+    },
+    {
+      "month": "2026-04",
+      "txn_count": 948,
+      "total_amount": 45847.86,
+      "unique_customers": 668
+    },
+    {
+      "month": "2026-05",
+      "txn_count": 1104,
+      "total_amount": 56544.03,
+      "unique_customers": 736
+    },
+    {
+      "month": "2026-06",
+      "txn_count": 1138,
+      "total_amount": 57405.48,
+      "unique_customers": 765
+    },
+    {
+      "month": "2026-07",
+      "txn_count": 1231,
+      "total_amount": 62084.62,
+      "unique_customers": 787
+    }
+  ],
+  "multi_source": {
+    "total_months": 30,
+    "match_count": 29,
+    "diverged_count": 1,
+    "diverged_months": [
+      {
+        "month": "2026-07",
+        "row_txn_count": 1231,
+        "parq_txn_count": 994,
+        "pct_diff": 23.8,
+        "row_total_amount": 62084.62,
+        "parq_total_amount": 50116.67,
+        "row_customers": 787,
+        "parq_customers": 685
+      }
+    ],
+    "only_in_row_agg": 102,
+    "only_in_parquet": 0
+  },
+  "leakage": {
+    "as_of_date": "2026-07-31 23:50:29.001075447",
+    "future_data_check": {
+      "as_of_date": "2026-07-31 23:50:29.001075447",
+      "profile_period_end": "2026-07-31 23:50:29.001075447",
+      "future_rows_count": 0,
+      "all_data_before_as_of": true
+    },
+    "tainted_variables": [
+      {
+        "variable": "days_since_last_transaction",
+        "reason": "Directly circular \u2014 computed from the same trailing-90-day window that defines the churn label."
+      },
+      {
+        "variable": "trailing_90d_spend",
+        "reason": "Windowed aggregate over the same 90-day window as the label definition."
+      }
+    ],
+    "clean_variables": [
+      {
+        "variable": "acquisition_channel",
+        "reason": "No evidence of label-window overlap."
+      },
+      {
+        "variable": "region",
+        "reason": "No evidence of label-window overlap."
+      },
+      {
+        "variable": "total_amount",
+        "reason": "No evidence of label-window overlap."
+      },
+      {
+        "variable": "return_rate",
+        "reason": "No evidence of label-window overlap."
+      }
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+$ C:\Users\atlasai.tarunred\Downloads\Bundle\churn-eda-submission\.venv\Scripts\python.exe -m scripts.run_time_and_leakage_checks
+============================================================
+TIME TREND � MONTHLY VOLUME
+============================================================
+  Period: 2024-02 to 2026-07 (30 months)
+  Txn count:  1 -> 1231  (~1231.0x)
+  Total amt:  $25.03 -> $62084.62
+  Customers:  1 -> 787
+  Direction:  increasing
+
+  Month-by-month:
+    2024-02:     1 txns  $      25     1 cust
+    2024-03:     3 txns  $      78     3 cust
+    2024-04:     5 txns  $     240     5 cust
+    2024-05:    17 txns  $     576    13 cust
+    2024-06:    19 txns  $     772    16 cust
+    2024-07:    31 txns  $    1511    24 cust
+    2024-08:    42 txns  $    2129    33 cust
+    2024-09:    69 txns  $    3858    53 cust
+    2024-10:    85 txns  $    4106    58 cust
+    2024-11:    84 txns  $    4107    68 cust
+    2024-12:   124 txns  $    5844    89 cust
+    2025-01:   151 txns  $    6752   111 cust
+    2025-02:   182 txns  $    9267   128 cust
+    2025-03:   234 txns  $   11577   151 cust
+    2025-04:   242 txns  $   12057   179 cust
+    2025-05:   308 txns  $   14102   232 cust
+    2025-06:   326 txns  $   17979   252 cust
+    2025-07:   367 txns  $   19358   269 cust
+    2025-08:   458 txns  $   23395   328 cust
+    2025-09:   487 txns  $   23635   336 cust
+    2025-10:   569 txns  $   26536   401 cust
+    2025-11:   560 txns  $   30883   418 cust
+    2025-12:   683 txns  $   33475   459 cust
+    2026-01:   724 txns  $   34380   522 cust
+    2026-02:   681 txns  $   32834   481 cust
+    2026-03:   869 txns  $   42459   602 cust
+    2026-04:   948 txns  $   45848   668 cust
+    2026-05:  1104 txns  $   56544   736 cust
+    2026-06:  1138 txns  $   57405   765 cust
+    2026-07:  1231 txns  $   62085   787 cust
+
+============================================================
+MULTI-SOURCE AGREEMENT
+============================================================
+  Months compared: 30
+  Exact match:     29
+  Diverged:        1
+
+  --- 2026-07 ---
+    Row-level:     1231 txns, $62084.62, 787 cust
+    Parquet:       994 txns, $50116.67, 685 cust
+    Txn diff:      23.8%
+
+  Extra customer-months (row-only): 102
+  Extra customer-months (parq-only): 0
+
+============================================================
+LEAKAGE CHECKS
+============================================================
+  As-of date: 2026-07-31 23:50:29.001075447
+  Future-data check: {'as_of_date': '2026-07-31 23:50:29.001075447', 'profile_period_end': '2026-07-31 23:50:29.001075447', 'future_rows_count': 0, 'all_data_before_as_of': True}
+
+  Tainted variables:
+    - days_since_last_transaction: Directly circular � computed from the same trailing-90-day window that defines the churn label.
+    - trailing_90d_spend: Windowed aggregate over the same 90-day window as the label definition.
+
+  Clean variables:
+    - acquisition_channel: No evidence of label-window overlap.
+    - region: No evidence of label-window overlap.
+    - total_amount: No evidence of label-window overlap.
+    - return_rate: No evidence of label-window overlap.
+
+Results saved to outputs/time_and_leakage_results.json

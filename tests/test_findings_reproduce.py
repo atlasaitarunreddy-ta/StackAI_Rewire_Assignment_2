@@ -1,14 +1,12 @@
 """
-Tests for EDA_FINDINGS.md reproducibility.
-
-For every numeric claim in the findings document, recompute it from the raw
-sources and assert it matches. This is the parity test for this assignment.
+Tests that recompute selected findings from raw sources and check a report claim.
 """
 
 import pandas as pd
 import numpy as np
 import sqlite3
 from eda.load import load_customers, load_transactions, load_monthly_agg
+from scripts.verify_findings import extract_churned_count_claim
 
 
 def test_row_count_customers():
@@ -33,6 +31,12 @@ def test_zero_nulls_all_sources():
     assert customers.isna().sum().sum() == 0
     assert txns.isna().sum().sum() == 0
     assert parquet.isna().sum().sum() == 0
+
+
+def test_churned_count_claim_is_read_from_findings_text():
+    findings_text = "- **Churned**: 202\n"
+    assert extract_churned_count_claim(findings_text) == 202
+    assert extract_churned_count_claim(findings_text.replace("202", "203")) == 203
 
 
 def test_zero_activity_count():

@@ -26,6 +26,9 @@ def numeric_profile(series: pd.Series, iqr_multiple: float = 1.5) -> dict:
 
     Outlier rule: values below Q1 - m * IQR or above Q3 + m * IQR are flagged.
     """
+    if series.empty or series.isna().all():
+        raise ValueError("Cannot profile an empty or all-missing numeric series.")
+
     q1 = float(series.quantile(0.25))
     q3 = float(series.quantile(0.75))
     iqr = q3 - q1

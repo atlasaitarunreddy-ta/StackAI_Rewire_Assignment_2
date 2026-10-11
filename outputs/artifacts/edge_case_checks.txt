@@ -1,0 +1,8 @@
+TC-004 constant-group probe
+Mann-Whitney U=0.0; p=0.220671361920; no exception.
+
+TC-005 empty-series probe
+ValueError: Cannot profile an empty or all-missing numeric series.
+
+TC-006 injected-outlier probe
+outlier_count=2; direction=all high; rule=1.5×IQR

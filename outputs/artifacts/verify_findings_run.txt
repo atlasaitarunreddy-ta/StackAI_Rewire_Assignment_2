@@ -1,0 +1,63 @@
+$ C:\Users\atlasai.tarunred\Downloads\Bundle\churn-eda-submission\.venv\Scripts\python.exe -m scripts.verify_findings
+============================================================
+VERIFYING NUMERIC CLAIMS IN EDA_FINDINGS.md
+============================================================
+  [PASS] Row count: customers.csv
+  [PASS] Row count: transactions.db
+  [PASS] Row count: monthly_agg.parquet
+  [PASS] Zero nulls: customers
+  [PASS] Zero nulls: transactions
+  [PASS] Zero nulls: monthly_agg
+  [PASS] Zero-activity customer count
+  [PASS] Zero-activity: all churned=1
+  [PASS] Overall churn rate
+  [PASS] Churned count
+  [PASS] EDA_FINDINGS.md churned-count claim
+  [PASS] Active customer churn rate
+  [PASS] Active churned count
+  [PASS] Amount mean
+  [PASS] Amount median
+  [PASS] Amount std
+  [PASS] Amount min
+  [PASS] Amount Q1
+  [PASS] Amount Q3
+  [PASS] Amount max
+  [PASS] IQR outlier upper bound
+  [PASS] IQR outlier lower bound
+  [PASS] Outlier count
+  [PASS] Outlier %
+  [PASS] Outliers all high
+  [PASS] Channel: organic churn rate
+  [PASS] Channel: paid_search churn rate
+  [PASS] Channel: referral churn rate
+  [PASS] Channel: social churn rate
+  [PASS] Region: east churn rate
+  [PASS] Region: north churn rate
+  [PASS] Region: west churn rate
+  [PASS] Region: south churn rate
+  [PASS] Trend: months covered
+  [PASS] Trend: first month
+  [PASS] Trend: last month
+  [PASS] Trend: first txn count
+  [PASS] Trend: last txn count
+  [PASS] Trend: direction
+  [PASS] Multi-source: total months
+  [PASS] Multi-source: match count
+  [PASS] Multi-source: diverged count
+  [PASS] Multi-source: only in row agg
+  [PASS] Multi-source: only in parquet
+  [PASS] Multi-source: diverged month
+  [PASS] Multi-source: July row txns
+  [PASS] Multi-source: July parq txns
+  [PASS] Multi-source: July row amt
+  [PASS] Multi-source: July parq amt
+  [PASS] DSLT: non-churned max days
+  [PASS] DSLT: non-churned min days
+  [PASS] DSLT: churned (active) max days
+  [PASS] DSLT: churned (active) min days
+  [PASS] DSLT: non-churned > 90 days
+  [PASS] DSLT: churned < 91 days
+
+============================================================
+RESULTS: 55 passed, 0 failed out of 55 checks
+ALL CHECKS PASSED - raw-data checks and the churned-count claim match.

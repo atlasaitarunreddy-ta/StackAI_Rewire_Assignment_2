@@ -1,0 +1,51 @@
+$ C:\Users\atlasai.tarunred\Downloads\Bundle\churn-eda-submission\.venv\Scripts\python.exe -m scripts.run_hypothesis_tests
+============================================================
+HYPOTHESIS TEST RESULTS
+============================================================
+
+--- acquisition_channel ---
+  Test:                  Chi-square test of independence
+  Statistic:             5.8387
+  p-value:               0.11972502404435889
+  Effect size:           Cram�r's V = 0.0624
+  Direction:             Highest churn: organic (15.27%); lowest churn: paid_search (10.21%)
+  Leakage tainted:       False
+  Leakage note:          Static attribute � no temporal overlap with label.
+
+--- region ---
+  Test:                  Chi-square test of independence
+  Statistic:             3.7571
+  p-value:               0.28891502428265387
+  Effect size:           Cram�r's V = 0.05
+  Direction:             Highest churn: east (16.36%); lowest churn: north (12.34%)
+  Leakage tainted:       False
+  Leakage note:          Static attribute � no temporal overlap with label.
+
+--- total_amount (customer-level) ---
+  Test:                  Mann-Whitney U test
+  Statistic:             61626.5
+  p-value:               7.166299258132719e-34
+  Effect size:           rank-biserial correlation = 0.5299
+  Direction:             Median total amount � churned: $71.12, non-churned: $364.38 (higher: non-churned)
+  Leakage tainted:       False
+  Leakage note:          All-time aggregate � not windowed relative to label.
+
+--- return_rate (customer-level) ---
+  Test:                  Mann-Whitney U test
+  Statistic:             110279.0
+  p-value:               9.275827260489429e-06
+  Effect size:           rank-biserial correlation = 0.1588
+  Direction:             Median return rate � churned: 0.0000, non-churned: 0.0000 (higher: non-churned)
+  Leakage tainted:       False
+  Leakage note:          All-time proportion � not windowed relative to label.
+
+--- days_since_last_transaction ---
+  Test:                  Descriptive + Mann-Whitney U (diagnostic only)
+  Statistic:             157058.0
+  p-value:               3.707889126282132e-74
+  Effect size:           descriptive separation range = 90.0
+  Direction:             Non-churned: 0�90 days; churned (active): 91�365 days. Complete separation by construction � the label is defined on this same window.
+  Leakage tainted:       True
+  Leakage note:          Circular with label definition � churn = no purchase in trailing 90 days, and this variable measures exactly that. Near-perfect separation is definitional, not predictive.
+
+Results saved to outputs/hypothesis_results.json

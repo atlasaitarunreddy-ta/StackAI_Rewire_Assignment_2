@@ -1,0 +1,11 @@
+Clean findings run:
+============================================================
+RESULTS: 55 passed, 0 failed out of 55 checks
+ALL CHECKS PASSED - raw-data checks and the churned-count claim match.
+exit code: 0
+
+Scratch copy with churned count changed from 202 to 203:
+  [FAIL] EDA_FINDINGS.md churned-count claim
+RESULTS: 54 passed, 1 failed out of 55 checks
+ERROR: Some claims in EDA_FINDINGS.md do not reproduce!
+exit code: 1

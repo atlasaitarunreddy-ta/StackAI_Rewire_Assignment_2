@@ -22,7 +22,7 @@ The 81 zero-activity customers, all churned=1, confirmed exactly. No edge case f
 
 ## 5. Findings mutation check
 
-**Performed**: After generating `EDA_FINDINGS.md`, I changed the stated churned count in `scripts/verify_findings.py` from 202 to 203 to test whether the parity script catches it. The script failed with `[FAIL] Churned count`. I restored the correct value. This confirms `test_findings_reproduce.py` and `verify_findings.py` catch claim mismatches.
+**Performed**: The clean report passed 55/55 checks. I changed `Churned: 202` to `Churned: 203` in a temporary copy of `EDA_FINDINGS.md` and ran `scripts.verify_findings --findings-file <scratch-copy>`. The run exited nonzero with `[FAIL] EDA_FINDINGS.md churned-count claim` (54 passed, 1 failed); the repository report was not modified. This proves that this specific report claim is mutation-sensitive. The verifier does not yet parse every numeric claim in the markdown.
 
 ## 6. Coverage-of-intent check
 

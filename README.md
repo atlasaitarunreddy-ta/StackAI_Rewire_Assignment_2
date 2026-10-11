@@ -28,13 +28,18 @@ python -m scripts.run_profile
 python -m scripts.run_hypothesis_tests
 python -m scripts.run_time_and_leakage_checks
 python -m scripts.verify_findings
-pytest -v
+python -m pytest -q
 ```
+
+### Run the notebook
+
+Open `notebooks/eda_churn.ipynb` in VS Code with `churn-eda-submission` as the workspace root and its `.venv` selected as the kernel, then choose **Run All**. The notebook reads `data/` relative to the repository root. The executed 26-cell notebook is saved in `outputs/artifacts/eda_churn.executed.ipynb`.
 
 ### Verified results
 
-- `python -m scripts.verify_findings` passed: 54 passed, 0 failed out of 54 checks
-- `pytest -v` passed: 47 passed in 9.93s
+- `python -m scripts.verify_findings` passed: 55 passed, 0 failed out of 55 checks
+- `pytest -v` passed: 49 passed in 9.26s
+- The notebook executed top-to-bottom: 26 cells completed.
 
 ## Key findings from my analysis
 

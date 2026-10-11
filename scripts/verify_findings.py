@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """
-Verify that every numeric claim in EDA_FINDINGS.md reproduces from raw data.
+Check key EDA findings against raw data and validate the report's churned count.
 
-Each claim is encoded as a lambda / computation against the loaded sources.
-The script exits non-zero on any mismatch.
+The raw-data checks compare computed values with expected values. The report
+claim check confirms that the churned count in the selected Markdown file
+matches the raw customer data. The script exits non-zero on any mismatch.
 """
 
 import sys
+import argparse
+import re
+from pathlib import Path
 import pandas as pd
 import numpy as np
 from eda.load import load_customers, load_transactions, load_monthly_agg
@@ -26,10 +30,24 @@ def check(name: str, expected, computed):
     return ok
 
 
+def extract_churned_count_claim(findings_text: str):
+    match = re.search(r"^\s*-\s+\*\*Churned\*\*:\s*([\d,]+)\s*$", findings_text, re.MULTILINE)
+    return int(match.group(1).replace(",", "")) if match else None
+
+
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--findings-file",
+        default="EDA_FINDINGS.md",
+        help="Markdown findings file whose churned-count claim should be checked.",
+    )
+    args = parser.parse_args()
+
     customers = load_customers(f"{DATA_DIR}/customers.csv")
     txns = load_transactions(f"{DATA_DIR}/transactions.db")
     parquet = load_monthly_agg(f"{DATA_DIR}/transactions_monthly_agg.parquet")
+    findings_text = Path(args.findings_file).read_text(encoding="utf-8")
 
     print("=" * 60)
     print("VERIFYING NUMERIC CLAIMS IN EDA_FINDINGS.md")
@@ -56,7 +74,13 @@ def main():
     # 4. Overall churn rate
     overall_churn = customers["churned"].mean()
     results.append(check("Overall churn rate", 0.1347, round(overall_churn, 4)))
-    results.append(check("Churned count", 202, int(customers["churned"].sum())))
+    churned_count = int(customers["churned"].sum())
+    results.append(check("Churned count", 202, churned_count))
+    results.append(check(
+        "EDA_FINDINGS.md churned-count claim",
+        churned_count,
+        extract_churned_count_claim(findings_text),
+    ))
 
     # 5. Churn among active customers
     active_ids = set(txns["customer_id"].unique())
@@ -152,7 +176,7 @@ def main():
         print("ERROR: Some claims in EDA_FINDINGS.md do not reproduce!")
         sys.exit(1)
     else:
-        print("ALL CLAIMS VERIFIED — EDA_FINDINGS.md reproduces from raw data.")
+        print("ALL CHECKS PASSED - raw-data checks and the churned-count claim match.")
         sys.exit(0)
 
 

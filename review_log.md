@@ -19,11 +19,11 @@
 
 **Verdict**: ✓ Fully covered across all artifacts. No leakage-tainted variable made it into usable-drivers lists without a caveat.
 
-### 2. Every numeric claim in EDA_FINDINGS.md is reproducible
+### 2. Findings verification and mutation behavior
 
-**Status: RESOLVED** — `scripts/verify_findings.py` runs all 54 checks and exits 0. The pytest `test_findings_reproduce.py` file mirrors these claims. Both pass.
+**Status: PARTIAL** — `scripts/verify_findings.py` passes 55 raw-data checks and directly compares the Markdown churned-count claim with the raw customer table. A scratch copy changed from 202 to 203 fails with one mismatch. The remaining checks compare raw values with expected constants; they do not parse every number from the Markdown report.
 
-**Verdict**: ✓ All claims are reproducible.
+**Verdict**: ✓ The report mutation check is real for the churned-count claim. Full text-to-data parity for every report number remains unproven.
 
 ### 3. Hypothesis test choices match variable shapes
 
@@ -64,20 +64,21 @@ All tests include effect-size measures (Cramér's V for chi-square, rank-biseria
 
 ### 8. Test suite completeness
 
-**Status: RESOLVED** — All five test files exist and pass:
+**Status: RESOLVED** — All five test files exist and pass (49 total):
 - `test_load.py` — 9 tests: schema, dtypes, row count ranges, null checks
 - `test_profile.py` — 7 tests: synthetic distributions, outlier detection, zero-activity
 - `test_hypotheses.py` — 7 tests: output structure, leakage flags, direction assertions
 - `test_time_and_leakage_checks.py` — 8 tests: trend direction, multi-source on real and constructed data, leakage flagging, future-data check
-- `test_findings_reproduce.py` — 15 tests: every major numeric claim in EDA_FINDINGS.md
+- `test_findings_reproduce.py` — 16 tests: selected numeric findings and the churned-count claim parser
 
-**Verdict**: ✓ 47 tests pass. Finding claims are paritised.
+**Verdict**: ✓ 49 tests pass. Numeric computations are covered by tests; full report-text parity remains partial as noted above.
 
 ---
 
 ## Unresolved items
 
-None. All review findings have been resolved.
+- The verifier does not yet compare every numeric claim in `EDA_FINDINGS.md` with its raw-data computation.
+- Local Claude Code history was found outside the submission and reviewed. It records Stage 0 generation and a later skill build that wrote modules, scripts, reports, and tests. The review and build prompts occurred in the same session, raw transcripts are not bundled, and later October 12 follow-up patches changed code/tests/docs. Therefore TC-011's strict no-out-of-run-edit condition is not met; the rubric records it as Fail rather than claiming a pass.
 
 ---
 
@@ -86,10 +87,10 @@ None. All review findings have been resolved.
 | Area | Status |
 |---|---|
 | Leakage-circularity flag coverage | ✓ Resolved |
-| Numeric claim reproducibility | ✓ Resolved (54/54 verified) |
+| Numeric claim reproducibility | Partial (55 checks; one report claim directly parsed) |
 | Hypothesis test appropriateness | ✓ Resolved |
 | Multi-source real reaggregation | ✓ Resolved |
 | Zero-activity vs missing distinction | ✓ Resolved |
 | Model recommendation excludes tainted variables | ✓ Resolved |
 | Time trend characterization | ✓ Resolved |
-| Test suite completeness | ✓ Resolved (47/47 pass) |
+| Test suite completeness | ✓ Resolved (49/49 pass) |
